@@ -128,8 +128,8 @@ public:
 
 protected:
   HigherOrderAccurateGradientImageFilter();
-  virtual ~HigherOrderAccurateGradientImageFilter() {}
-  virtual void PrintSelf(std::ostream & os, Indent indent) const;
+  ~HigherOrderAccurateGradientImageFilter() override {}
+  void PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** GradientImageFilter needs a larger input requested region than
    * the output requested region.  As such, GradientImageFilter needs
@@ -137,7 +137,7 @@ protected:
    * in order to inform the pipeline execution model.
    *
    * \sa ImageToImageFilter::GenerateInputRequestedRegion() */
-  virtual void GenerateInputRequestedRegion();
+  void GenerateInputRequestedRegion() override;
 
   /** GradientImageFilter can be implemented as a multithreaded filter.
    * Therefore, this implementation provides a ThreadedGenerateData()
@@ -149,7 +149,7 @@ protected:
    *
    * \sa ImageToImageFilter::ThreadedGenerateData(),
    *     ImageToImageFilter::GenerateData() */
-  virtual void ThreadedGenerateData(const OutputImageRegionType & outputRegionForThread, ThreadIdType threadId) ITK_OVERRIDE;
+  void ThreadedGenerateData(const OutputImageRegionType & outputRegionForThread, ThreadIdType threadId) ITK_OVERRIDE;
 
 private:
   HigherOrderAccurateGradientImageFilter( const Self & ); // purposely not implemented
