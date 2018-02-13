@@ -57,8 +57,7 @@ class HigherOrderAccurateGradientImageFilter: public ImageToImageFilter< TInputI
 {
 public:
   /** Extract dimension from input image. */
-  itkStaticConstMacro(ImageDimension, unsigned int,
-    TInputImage::ImageDimension);
+  static constexpr unsigned int ImageDimension = TInputImage::ImageDimension;
 
   /** Standard class typedefs. */
   typedef HigherOrderAccurateGradientImageFilter Self;
