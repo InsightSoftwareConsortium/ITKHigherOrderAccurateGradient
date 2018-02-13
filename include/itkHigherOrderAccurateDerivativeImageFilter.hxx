@@ -93,7 +93,7 @@ HigherOrderAccurateDerivativeImageFilter< TInputImage, TOutputImage >
 
   // Define the operator value type so that we can filter integral
   // images and have the proper operator defined.
-  typedef typename NumericTraits< OutputPixelType >::RealType OperatorValueType;
+  using OperatorValueType = typename NumericTraits< OutputPixelType >::RealType;
 
   // Filter
   HigherOrderAccurateDerivativeOperator< OperatorValueType, ImageDimension > oper;

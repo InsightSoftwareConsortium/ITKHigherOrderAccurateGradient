@@ -32,31 +32,31 @@ int itkHigherOrderAccurateDerivativeImageFilterTest(int argc, char *argv[])
     }
 
   const unsigned int Dimension = 2;
-  typedef float                              PixelType;
-  typedef itk::Image< PixelType, Dimension > ImageType;
+  using PixelType = float;
+  using ImageType = itk::Image< PixelType, Dimension >;
 
   std::string outputPrefix = argv[2];
 
-  typedef itk::ImageFileReader< ImageType > ReaderType;
+  using ReaderType = itk::ImageFileReader< ImageType >;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( argv[1] );
 
-  typedef itk::HigherOrderAccurateDerivativeImageFilter< ImageType, ImageType > HigherFilterType;
+  using HigherFilterType = itk::HigherOrderAccurateDerivativeImageFilter< ImageType, ImageType >;
   HigherFilterType::Pointer nthFilter = HigherFilterType::New();
   nthFilter->SetInput( reader->GetOutput() );
   nthFilter->SetOrder( 1 );
 
-  typedef itk::ImageFileWriter< ImageType > WriterType;
+  using WriterType = itk::ImageFileWriter< ImageType >;
   WriterType::Pointer nthWriter = WriterType::New();
   nthWriter->SetInput( nthFilter->GetOutput() );
 
   // First order accurate.
-  typedef itk::DerivativeImageFilter< ImageType, ImageType > FirstFilterType;
+  using FirstFilterType = itk::DerivativeImageFilter< ImageType, ImageType >;
   FirstFilterType::Pointer firstFilter = FirstFilterType::New();
   firstFilter->SetInput( reader->GetOutput() );
   firstFilter->SetOrder( 1 );
 
-  typedef itk::ImageFileWriter< ImageType > WriterType;
+  using WriterType = itk::ImageFileWriter< ImageType >;
   WriterType::Pointer firstWriter = WriterType::New();
   firstWriter->SetInput( firstFilter->GetOutput() );
 

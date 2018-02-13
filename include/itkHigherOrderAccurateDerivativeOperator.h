@@ -63,13 +63,13 @@ class HigherOrderAccurateDerivativeOperator:
   public NeighborhoodOperator< TPixel, VDimension, TAllocator >
 {
 public:
-  /** Standard class typedefs. */
-  typedef HigherOrderAccurateDerivativeOperator Self;
-  typedef NeighborhoodOperator<
-    TPixel, VDimension, TAllocator >           Superclass;
+  /** Standard class type alias. */
+  using Self = HigherOrderAccurateDerivativeOperator;
+  using Superclass = NeighborhoodOperator<
+    TPixel, VDimension, TAllocator >;
 
-  typedef typename Superclass::PixelType     PixelType;
-  typedef typename Superclass::PixelRealType PixelRealType;
+  using PixelType = typename Superclass::PixelType;
+  using PixelRealType = typename Superclass::PixelRealType;
 
   /** Run-time type information (and related methods). */
   itkTypeMacro(HigherOrderAccurateDerivativeOperator, NeighborhoodOperator);
@@ -124,7 +124,7 @@ public:
 protected:
   /** Typedef support for coefficient vector type.  Necessary to
    * work around compiler bug on VC++. */
-  typedef typename Superclass::CoefficientVector CoefficientVector;
+  using CoefficientVector = typename Superclass::CoefficientVector;
 
   /** Calculates operator coefficients. */
   CoefficientVector GenerateCoefficients() override;

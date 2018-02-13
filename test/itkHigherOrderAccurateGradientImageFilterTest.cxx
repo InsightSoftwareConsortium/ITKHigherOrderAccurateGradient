@@ -33,30 +33,29 @@ int itkHigherOrderAccurateGradientImageFilterTest(int argc, char *argv[])
     }
 
   const unsigned int Dimension = 2;
-  typedef float                              PixelType;
-  typedef itk::Image< PixelType, Dimension > ImageType;
+  using PixelType = float;
+  using ImageType = itk::Image< PixelType, Dimension >;
 
-  typedef itk::ImageFileReader< ImageType > ReaderType;
+  using ReaderType = itk::ImageFileReader< ImageType >;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( argv[1] );
 
   // First order accurate.
-  typedef itk::GradientImageFilter< ImageType, float, float > FirstFilterType;
+  using FirstFilterType = itk::GradientImageFilter< ImageType, float, float >;
   FirstFilterType::Pointer firstFilter = FirstFilterType::New();
   firstFilter->SetInput( reader->GetOutput() );
 
-  typedef itk::HigherOrderAccurateGradientImageFilter< ImageType, float, float > FilterType;
-  typedef FilterType::OutputImageType GradientImageType;
+  using FilterType = itk::HigherOrderAccurateGradientImageFilter< ImageType, float, float >;
+  using GradientImageType = FilterType::OutputImageType;
   FilterType::Pointer filter = FilterType::New();
   filter->SetInput( reader->GetOutput() );
 
   std::string outputPrefix = argv[2];
 
-  typedef itk::VectorMagnitudeImageFilter< GradientImageType, ImageType >
-    GradientMagnitudeFilterType;
+  using GradientMagnitudeFilterType = itk::VectorMagnitudeImageFilter< GradientImageType, ImageType >;
   GradientMagnitudeFilterType::Pointer gradientMagnitude = GradientMagnitudeFilterType::New();
 
-  typedef itk::ImageFileWriter< ImageType > GradientMagnitudeWriterType;
+  using GradientMagnitudeWriterType = itk::ImageFileWriter< ImageType >;
   GradientMagnitudeWriterType::Pointer gradientMagnitudeWriter = GradientMagnitudeWriterType::New();
   gradientMagnitudeWriter->SetInput( gradientMagnitude->GetOutput() );
 
