@@ -56,6 +56,8 @@ class HigherOrderAccurateGradientImageFilter: public ImageToImageFilter< TInputI
   Image< CovariantVector< TOutputValueType, TInputImage::ImageDimension >, TInputImage::ImageDimension > >
 {
 public:
+  ITK_DISALLOW_COPY_AND_ASSIGN(HigherOrderAccurateGradientImageFilter);
+
   /** Extract dimension from input image. */
   static constexpr unsigned int ImageDimension = TInputImage::ImageDimension;
 
@@ -149,9 +151,6 @@ protected:
   void ThreadedGenerateData(const OutputImageRegionType & outputRegionForThread, ThreadIdType threadId) override;
 
 private:
-  HigherOrderAccurateGradientImageFilter( const Self & ); // purposely not implemented
-  void operator=( const Self & );                 // purposely not implemented
-
   bool m_UseImageSpacing;
 
   // flag to take or not the image direction into account
