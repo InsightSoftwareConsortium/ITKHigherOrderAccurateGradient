@@ -45,18 +45,17 @@ namespace itk
  * \ingroup ImageFeatureExtraction
  * \ingroup HigherOrderAccurateGradient
  */
-template< typename TInputImage, typename TOutputImage >
-class HigherOrderAccurateDerivativeImageFilter:
-  public ImageToImageFilter< TInputImage, TOutputImage >
+template <typename TInputImage, typename TOutputImage>
+class HigherOrderAccurateDerivativeImageFilter : public ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(HigherOrderAccurateDerivativeImageFilter);
 
   /** Standard class type alias. */
   using Self = HigherOrderAccurateDerivativeImageFilter;
-  using Superclass = ImageToImageFilter< TInputImage, TOutputImage >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = ImageToImageFilter<TInputImage, TOutputImage>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Extract some information from the image types.  Dimensionality
    * of the two images is assumed to be the same. */
@@ -82,8 +81,7 @@ public:
   /** The output pixel type must be signed. */
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
-  itkConceptMacro( SignedOutputPixelType,
-                   ( Concept::Signed< OutputPixelType > ) );
+  itkConceptMacro(SignedOutputPixelType, (Concept::Signed<OutputPixelType>));
   /** End concept checking */
 #endif
 
@@ -97,13 +95,19 @@ public:
 
   /** Use the image spacing information in calculations. Use this option if you
    *  want derivatives in physical space. Default is UseImageSpacingOn. */
-  void SetUseImageSpacingOn()
-  { this->SetUseImageSpacing(true); }
+  void
+  SetUseImageSpacingOn()
+  {
+    this->SetUseImageSpacing(true);
+  }
 
   /** Ignore the image spacing. Use this option if you want derivatives in
       isotropic pixel space.  Default is UseImageSpacingOn. */
-  void SetUseImageSpacingOff()
-  { this->SetUseImageSpacing(false); }
+  void
+  SetUseImageSpacingOff()
+  {
+    this->SetUseImageSpacing(false);
+  }
 
   /** Set/Get whether or not the filter will use the spacing of the input
       image in its calculations */
@@ -111,15 +115,16 @@ public:
   itkGetConstMacro(UseImageSpacing, bool);
 
 protected:
-  HigherOrderAccurateDerivativeImageFilter():
-    m_Order(1),
-    m_OrderOfAccuracy(2),
-    m_Direction(0),
-    m_UseImageSpacing(true)
+  HigherOrderAccurateDerivativeImageFilter()
+    : m_Order(1)
+    , m_OrderOfAccuracy(2)
+    , m_Direction(0)
+    , m_UseImageSpacing(true)
   {}
 
   ~HigherOrderAccurateDerivativeImageFilter() override {}
-  void PrintSelf(std::ostream & os, Indent indent) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** HigherOrderAccurateDerivativeImageFilter needs a larger input requested region than
    * the output requested region (larger in the direction of the
@@ -128,14 +133,16 @@ protected:
    * inform the pipeline execution model.
    *
    * \sa ImageToImageFilter::GenerateInputRequestedRegion() */
-  void GenerateInputRequestedRegion() override;
+  void
+  GenerateInputRequestedRegion() override;
 
   /** Standard pipeline method. While this class does not implement a
    * ThreadedGenerateData(), its GenerateData() delegates all
    * calculations to an NeighborhoodOperatorImageFilter.  Since the
    * NeighborhoodOperatorImageFilter is multithreaded, this filter is
    * multithreaded by default. */
-  void GenerateData() override;
+  void
+  GenerateData() override;
 
 private:
   /** The order of the derivative. */
@@ -153,7 +160,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkHigherOrderAccurateDerivativeImageFilter.hxx"
+#  include "itkHigherOrderAccurateDerivativeImageFilter.hxx"
 #endif
 
 #endif

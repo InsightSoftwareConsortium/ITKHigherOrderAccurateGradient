@@ -50,10 +50,11 @@ namespace itk
  * \ingroup GradientFilters
  * \ingroup HigherOrderAccurateGradient
  */
-template< typename TInputImage, typename TOperatorValueType = float,
-  class TOutputValueType = float >
-class HigherOrderAccurateGradientImageFilter: public ImageToImageFilter< TInputImage,
-  Image< CovariantVector< TOutputValueType, TInputImage::ImageDimension >, TInputImage::ImageDimension > >
+template <typename TInputImage, typename TOperatorValueType = float, class TOutputValueType = float>
+class HigherOrderAccurateGradientImageFilter
+  : public ImageToImageFilter<
+      TInputImage,
+      Image<CovariantVector<TOutputValueType, TInputImage::ImageDimension>, TInputImage::ImageDimension>>
 {
 public:
   ITK_DISALLOW_COPY_AND_ASSIGN(HigherOrderAccurateGradientImageFilter);
@@ -67,15 +68,14 @@ public:
   /** Convenient type alias for simplifying declarations. */
   using InputImageType = TInputImage;
   using InputImagePointer = typename InputImageType::Pointer;
-  using OutputImageType = Image< CovariantVector<
-                   TOutputValueType, itkGetStaticConstMacro(OutputImageDimension) >,
-                 itkGetStaticConstMacro(OutputImageDimension) >;
+  using OutputImageType = Image<CovariantVector<TOutputValueType, itkGetStaticConstMacro(OutputImageDimension)>,
+                                itkGetStaticConstMacro(OutputImageDimension)>;
   using OutputImagePointer = typename OutputImageType::Pointer;
 
   /** Standard class type alias. */
-  using Superclass = ImageToImageFilter< InputImageType, OutputImageType >;
-  using Pointer = SmartPointer< Self >;
-  using ConstPointer = SmartPointer< const Self >;
+  using Superclass = ImageToImageFilter<InputImageType, OutputImageType>;
+  using Pointer = SmartPointer<Self>;
+  using ConstPointer = SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -87,8 +87,7 @@ public:
   using InputPixelType = typename InputImageType::PixelType;
   using OperatorValueType = TOperatorValueType;
   using OutputValueType = TOutputValueType;
-  using OutputPixelType = CovariantVector<
-    OutputValueType, itkGetStaticConstMacro(OutputImageDimension) >;
+  using OutputPixelType = CovariantVector<OutputValueType, itkGetStaticConstMacro(OutputImageDimension)>;
   using OutputImageRegionType = typename OutputImageType::RegionType;
 
   /** Set/Get whether or not the filter will use the spacing of the input
@@ -99,10 +98,8 @@ public:
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
-  itkConceptMacro( InputConvertibleToOutputCheck,
-                  ( Concept::Convertible< InputPixelType, OutputValueType > ) );
-  itkConceptMacro( OutputHasNumericTraitsCheck,
-                  ( Concept::HasNumericTraits< OutputValueType > ) );
+  itkConceptMacro(InputConvertibleToOutputCheck, (Concept::Convertible<InputPixelType, OutputValueType>));
+  itkConceptMacro(OutputHasNumericTraitsCheck, (Concept::HasNumericTraits<OutputValueType>));
   /** End concept checking */
 #endif
 
@@ -122,13 +119,13 @@ public:
 
   /** Set/Get the order of accuracy of the derivative operator.  For more
    * information, see HigherOrderAccurateDerivativeOperator. */
-  itkSetMacro( OrderOfAccuracy, unsigned int );
-  itkGetConstMacro( OrderOfAccuracy, unsigned int )
+  itkSetMacro(OrderOfAccuracy, unsigned int);
+  itkGetConstMacro(OrderOfAccuracy, unsigned int)
 
-protected:
-  HigherOrderAccurateGradientImageFilter();
+    protected : HigherOrderAccurateGradientImageFilter();
   ~HigherOrderAccurateGradientImageFilter() override {}
-  void PrintSelf(std::ostream & os, Indent indent) const override;
+  void
+  PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** GradientImageFilter needs a larger input requested region than
    * the output requested region.  As such, GradientImageFilter needs
@@ -136,7 +133,8 @@ protected:
    * in order to inform the pipeline execution model.
    *
    * \sa ImageToImageFilter::GenerateInputRequestedRegion() */
-  void GenerateInputRequestedRegion() override;
+  void
+  GenerateInputRequestedRegion() override;
 
   /** GradientImageFilter can be implemented as a multithreaded filter.
    * Therefore, this implementation provides a ThreadedGenerateData()
@@ -148,7 +146,8 @@ protected:
    *
    * \sa ImageToImageFilter::ThreadedGenerateData(),
    *     ImageToImageFilter::GenerateData() */
-  void DynamicThreadedGenerateData(const OutputImageRegionType & outputRegionForThread) override;
+  void
+  DynamicThreadedGenerateData(const OutputImageRegionType & outputRegionForThread) override;
 
 private:
   bool m_UseImageSpacing;
@@ -163,7 +162,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkHigherOrderAccurateGradientImageFilter.hxx"
+#  include "itkHigherOrderAccurateGradientImageFilter.hxx"
 #endif
 
 #endif

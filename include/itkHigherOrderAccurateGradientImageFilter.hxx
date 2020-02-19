@@ -29,36 +29,34 @@
 namespace itk
 {
 
-template< typename TInputImage, typename TOperatorValueType, typename TOutputValueType >
-HigherOrderAccurateGradientImageFilter< TInputImage, TOperatorValueType, TOutputValueType >
-::HigherOrderAccurateGradientImageFilter():
-  m_UseImageSpacing( true ),
-  m_UseImageDirection( true ),
-  m_OrderOfAccuracy( 2 )
-{
-}
+template <typename TInputImage, typename TOperatorValueType, typename TOutputValueType>
+HigherOrderAccurateGradientImageFilter<TInputImage, TOperatorValueType, TOutputValueType>::
+  HigherOrderAccurateGradientImageFilter()
+  : m_UseImageSpacing(true)
+  , m_UseImageDirection(true)
+  , m_OrderOfAccuracy(2)
+{}
 
 
-template< typename TInputImage, typename TOperatorValueType, typename TOutputValueType >
+template <typename TInputImage, typename TOperatorValueType, typename TOutputValueType>
 void
-HigherOrderAccurateGradientImageFilter< TInputImage, TOperatorValueType, TOutputValueType >
-::GenerateInputRequestedRegion()
+HigherOrderAccurateGradientImageFilter<TInputImage, TOperatorValueType, TOutputValueType>::
+  GenerateInputRequestedRegion()
 {
   // call the superclass' implementation of this method
   Superclass::GenerateInputRequestedRegion();
 
   // get pointers to the input and output
-  InputImagePointer inputPtr =
-    const_cast< InputImageType * >( this->GetInput() );
+  InputImagePointer  inputPtr = const_cast<InputImageType *>(this->GetInput());
   OutputImagePointer outputPtr = this->GetOutput();
 
-  if ( !inputPtr || !outputPtr )
-    {
+  if (!inputPtr || !outputPtr)
+  {
     return;
-    }
+  }
 
   // Build an operator so that we can determine the kernel size
-  HigherOrderAccurateDerivativeOperator< OperatorValueType, ImageDimension > oper;
+  HigherOrderAccurateDerivativeOperator<OperatorValueType, ImageDimension> oper;
   oper.SetDirection(0);
   oper.SetOrder(1);
   oper.SetOrderOfAccuracy(this->m_OrderOfAccuracy);
@@ -74,13 +72,13 @@ HigherOrderAccurateGradientImageFilter< TInputImage, TOperatorValueType, TOutput
   inputRequestedRegion.PadByRadius(radius);
 
   // crop the input requested region at the input's largest possible region
-  if ( inputRequestedRegion.Crop( inputPtr->GetLargestPossibleRegion() ) )
-    {
+  if (inputRequestedRegion.Crop(inputPtr->GetLargestPossibleRegion()))
+  {
     inputPtr->SetRequestedRegion(inputRequestedRegion);
     return;
-    }
+  }
   else
-    {
+  {
     // Couldn't crop the region (requested region is outside the largest
     // possible region).  Throw an exception.
 
@@ -93,35 +91,34 @@ HigherOrderAccurateGradientImageFilter< TInputImage, TOperatorValueType, TOutput
     e.SetDescription("Requested region is (at least partially) outside the largest possible region.");
     e.SetDataObject(inputPtr);
     throw e;
-    }
+  }
 }
 
 
-template< typename TInputImage, typename TOperatorValueType, typename TOutputValueType >
+template <typename TInputImage, typename TOperatorValueType, typename TOutputValueType>
 void
-HigherOrderAccurateGradientImageFilter< TInputImage, TOperatorValueType, TOutputValueType >
-::DynamicThreadedGenerateData(const OutputImageRegionType & outputRegionForThread)
+HigherOrderAccurateGradientImageFilter<TInputImage, TOperatorValueType, TOutputValueType>::DynamicThreadedGenerateData(
+  const OutputImageRegionType & outputRegionForThread)
 {
   unsigned int    i;
   OutputPixelType gradient;
 
-  ZeroFluxNeumannBoundaryCondition< InputImageType > nbc;
+  ZeroFluxNeumannBoundaryCondition<InputImageType> nbc;
 
-  ConstNeighborhoodIterator< InputImageType > nit;
-  ImageRegionIterator< OutputImageType >      it;
+  ConstNeighborhoodIterator<InputImageType> nit;
+  ImageRegionIterator<OutputImageType>      it;
 
-  NeighborhoodInnerProduct< InputImageType, OperatorValueType,
-                            OutputValueType > SIP;
+  NeighborhoodInnerProduct<InputImageType, OperatorValueType, OutputValueType> SIP;
 
   // Get the input and output
-  OutputImageType *     outputImage = this->GetOutput();
-  const InputImageType *inputImage  = this->GetInput();
+  OutputImageType *      outputImage = this->GetOutput();
+  const InputImageType * inputImage = this->GetInput();
 
   // Set up operators
-  HigherOrderAccurateDerivativeOperator< OperatorValueType, ImageDimension > op[ImageDimension];
+  HigherOrderAccurateDerivativeOperator<OperatorValueType, ImageDimension> op[ImageDimension];
 
-  for ( i = 0; i < ImageDimension; i++ )
-    {
+  for (i = 0; i < ImageDimension; i++)
+  {
     op[i].SetDirection(0);
     op[i].SetOrder(1);
     op[i].SetOrderOfAccuracy(this->m_OrderOfAccuracy);
@@ -132,90 +129,86 @@ HigherOrderAccurateGradientImageFilter< TInputImage, TOperatorValueType, TOutput
     op[i].FlipAxes();
 
     // Take into account the pixel spacing if necessary
-    if ( m_UseImageSpacing == true )
+    if (m_UseImageSpacing == true)
+    {
+      if (this->GetInput()->GetSpacing()[i] == 0.0)
       {
-      if ( this->GetInput()->GetSpacing()[i] == 0.0 )
-        {
         itkExceptionMacro(<< "Image spacing cannot be zero.");
-        }
+      }
       else
-        {
+      {
         op[i].ScaleCoefficients(1.0 / this->GetInput()->GetSpacing()[i]);
-        }
       }
     }
+  }
 
   // Calculate iterator radius
-  Size< ImageDimension > radius;
-  for ( i = 0; i < ImageDimension; ++i )
-    {
-    radius[i]  = op[0].GetRadius()[0];
-    }
+  Size<ImageDimension> radius;
+  for (i = 0; i < ImageDimension; ++i)
+  {
+    radius[i] = op[0].GetRadius()[0];
+  }
 
   // Find the data-set boundary "faces"
-  typename NeighborhoodAlgorithm::ImageBoundaryFacesCalculator< InputImageType >::FaceListType faceList;
-  NeighborhoodAlgorithm::ImageBoundaryFacesCalculator< InputImageType > bC;
+  typename NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<InputImageType>::FaceListType faceList;
+  NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<InputImageType>                        bC;
   faceList = bC(inputImage, outputRegionForThread, radius);
 
-  typename NeighborhoodAlgorithm::ImageBoundaryFacesCalculator< InputImageType >::FaceListType::iterator fit;
+  typename NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<InputImageType>::FaceListType::iterator fit;
   fit = faceList.begin();
 
   // Initialize the x_slice array
-  nit = ConstNeighborhoodIterator< InputImageType >(radius, inputImage, *fit);
+  nit = ConstNeighborhoodIterator<InputImageType>(radius, inputImage, *fit);
 
   std::slice          x_slice[ImageDimension];
   const unsigned long center = nit.Size() / 2;
-  for ( i = 0; i < ImageDimension; ++i )
-    {
-    x_slice[i] = std::slice( center - nit.GetStride(i) * radius[i],
-                             op[i].GetSize()[0], nit.GetStride(i) );
-    }
+  for (i = 0; i < ImageDimension; ++i)
+  {
+    x_slice[i] = std::slice(center - nit.GetStride(i) * radius[i], op[i].GetSize()[0], nit.GetStride(i));
+  }
 
   // Process non-boundary face and then each of the boundary faces.
   // These are N-d regions which border the edge of the buffer.
-  for ( fit = faceList.begin(); fit != faceList.end(); ++fit )
-    {
-    nit = ConstNeighborhoodIterator< InputImageType >(radius,
-                                                      inputImage, *fit);
-    it = ImageRegionIterator< OutputImageType >(outputImage, *fit);
+  for (fit = faceList.begin(); fit != faceList.end(); ++fit)
+  {
+    nit = ConstNeighborhoodIterator<InputImageType>(radius, inputImage, *fit);
+    it = ImageRegionIterator<OutputImageType>(outputImage, *fit);
     nit.OverrideBoundaryCondition(&nbc);
     nit.GoToBegin();
 
-    while ( !nit.IsAtEnd() )
+    while (!nit.IsAtEnd())
+    {
+      for (i = 0; i < ImageDimension; ++i)
       {
-      for ( i = 0; i < ImageDimension; ++i )
-        {
         gradient[i] = SIP(x_slice[i], nit, op[i]);
-        }
+      }
 
-      if ( this->m_UseImageDirection )
-        {
-        inputImage->TransformLocalVectorToPhysicalVector( gradient, it.Value() );
-        }
+      if (this->m_UseImageDirection)
+      {
+        inputImage->TransformLocalVectorToPhysicalVector(gradient, it.Value());
+      }
       else
-        {
+      {
         it.Value() = gradient;
-        }
+      }
       ++nit;
       ++it;
-      }
     }
+  }
 }
 
 
-template< typename TInputImage, typename TOperatorValueType, typename TOutputValueType >
+template <typename TInputImage, typename TOperatorValueType, typename TOutputValueType>
 void
-HigherOrderAccurateGradientImageFilter< TInputImage, TOperatorValueType, TOutputValueType >
-::PrintSelf(std::ostream & os, Indent indent) const
+HigherOrderAccurateGradientImageFilter<TInputImage, TOperatorValueType, TOutputValueType>::PrintSelf(
+  std::ostream & os,
+  Indent         indent) const
 {
   Superclass::PrintSelf(os, indent);
 
-  os << indent << "UseImageSpacing: "
-     << ( this->m_UseImageSpacing ? "On" : "Off" ) << std::endl;
-  os << indent << "UseImageDirection = "
-     << ( this->m_UseImageDirection ? "On" : "Off" ) << std::endl;
-  os << indent << "OrderOfAccuracy: "
-     << this->m_OrderOfAccuracy << std::endl;
+  os << indent << "UseImageSpacing: " << (this->m_UseImageSpacing ? "On" : "Off") << std::endl;
+  os << indent << "UseImageDirection = " << (this->m_UseImageDirection ? "On" : "Off") << std::endl;
+  os << indent << "OrderOfAccuracy: " << this->m_OrderOfAccuracy << std::endl;
 }
 
 } // end namespace itk

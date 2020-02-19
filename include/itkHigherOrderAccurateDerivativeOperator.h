@@ -57,16 +57,13 @@ namespace itk
  * \ingroup Operators
  * \ingroup HigherOrderAccurateGradient
  */
-template< typename TPixel, unsigned int VDimension = 2,
-          typename TAllocator = NeighborhoodAllocator< TPixel > >
-class HigherOrderAccurateDerivativeOperator:
-  public NeighborhoodOperator< TPixel, VDimension, TAllocator >
+template <typename TPixel, unsigned int VDimension = 2, typename TAllocator = NeighborhoodAllocator<TPixel>>
+class HigherOrderAccurateDerivativeOperator : public NeighborhoodOperator<TPixel, VDimension, TAllocator>
 {
 public:
   /** Standard class type alias. */
   using Self = HigherOrderAccurateDerivativeOperator;
-  using Superclass = NeighborhoodOperator<
-    TPixel, VDimension, TAllocator >;
+  using Superclass = NeighborhoodOperator<TPixel, VDimension, TAllocator>;
 
   using PixelType = typename Superclass::PixelType;
   using PixelRealType = typename Superclass::PixelRealType;
@@ -75,18 +72,21 @@ public:
   itkTypeMacro(HigherOrderAccurateDerivativeOperator, NeighborhoodOperator);
 
   /** Constructor. */
-  HigherOrderAccurateDerivativeOperator():
-    m_Order(1),
-    m_OrderOfAccuracy(2)
+  HigherOrderAccurateDerivativeOperator()
+    : m_Order(1)
+    , m_OrderOfAccuracy(2)
   {}
 
   /** Copy constructor. */
-  HigherOrderAccurateDerivativeOperator(const Self & other):
-    NeighborhoodOperator< TPixel, VDimension, TAllocator >(other)
-  { m_Order = other.m_Order;  }
+  HigherOrderAccurateDerivativeOperator(const Self & other)
+    : NeighborhoodOperator<TPixel, VDimension, TAllocator>(other)
+  {
+    m_Order = other.m_Order;
+  }
 
   /** Assignment operator */
-  Self & operator=(const Self & other)
+  Self &
+  operator=(const Self & other)
   {
     Superclass::operator=(other);
     m_Order = other.m_Order;
@@ -94,31 +94,41 @@ public:
   }
 
   /** Sets the order of the derivative. */
-  void SetOrder(const unsigned int & order)
+  void
+  SetOrder(const unsigned int & order)
   {
     this->m_Order = order;
   }
 
   /** Returns the order of the derivative. */
-  unsigned int GetOrder() const { return m_Order; }
+  unsigned int
+  GetOrder() const
+  {
+    return m_Order;
+  }
 
   /** Sets the order of accuracy of the derivative. The derivative estimate will
    * be accurate out to two times the given order in terms of Taylor Series terms.  The
    * radius of the neighborhood operator is also equal to the given order.  */
-  void SetOrderOfAccuracy(const unsigned int & order)
+  void
+  SetOrderOfAccuracy(const unsigned int & order)
   {
     this->m_OrderOfAccuracy = order;
   }
 
-  unsigned int GetOrderOfAccuracy() const { return m_OrderOfAccuracy; }
+  unsigned int
+  GetOrderOfAccuracy() const
+  {
+    return m_OrderOfAccuracy;
+  }
 
   /** Prints some debugging information */
-  void PrintSelf(std::ostream & os, Indent i) const override
+  void
+  PrintSelf(std::ostream & os, Indent i) const override
   {
-    os << i << "HigherOrderAccurateDerivativeOperator { this=" << this
-       << ", m_Order = " << m_Order
+    os << i << "HigherOrderAccurateDerivativeOperator { this=" << this << ", m_Order = " << m_Order
        << ", m_OrderOfAccuracy = " << m_OrderOfAccuracy << "}" << std::endl;
-    Superclass::PrintSelf( os, i.GetNextIndent() );
+    Superclass::PrintSelf(os, i.GetNextIndent());
   }
 
 protected:
@@ -127,13 +137,19 @@ protected:
   using CoefficientVector = typename Superclass::CoefficientVector;
 
   /** Calculates operator coefficients. */
-  CoefficientVector GenerateCoefficients() override;
+  CoefficientVector
+  GenerateCoefficients() override;
 
   /** Arranges coefficients spatially in the memory buffer. */
-  void Fill(const CoefficientVector & coeff) override
-  {   Superclass::FillCenteredDirectional(coeff);  }
+  void
+  Fill(const CoefficientVector & coeff) override
+  {
+    Superclass::FillCenteredDirectional(coeff);
+  }
+
 private:
-  CoefficientVector GenerateFirstOrderCoefficients();
+  CoefficientVector
+  GenerateFirstOrderCoefficients();
 
   /** Order of the derivative. */
   unsigned int m_Order;
@@ -145,7 +161,7 @@ private:
 } // namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkHigherOrderAccurateDerivativeOperator.hxx"
+#  include "itkHigherOrderAccurateDerivativeOperator.hxx"
 #endif
 
 #endif

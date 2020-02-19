@@ -21,73 +21,74 @@
 
 #include "itkHigherOrderAccurateDerivativeImageFilter.h"
 
-int itkHigherOrderAccurateDerivativeImageFilterTest(int argc, char *argv[])
+int
+itkHigherOrderAccurateDerivativeImageFilterTest(int argc, char * argv[])
 {
-  if ( argc < 3 )
-    {
+  if (argc < 3)
+  {
     std::cerr << "Usage: " << argv[0];
     std::cerr << " inputImage outputPrefix ";
     std::cerr << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   constexpr unsigned int Dimension = 2;
   using PixelType = float;
-  using ImageType = itk::Image< PixelType, Dimension >;
+  using ImageType = itk::Image<PixelType, Dimension>;
 
   std::string outputPrefix = argv[2];
 
-  using ReaderType = itk::ImageFileReader< ImageType >;
+  using ReaderType = itk::ImageFileReader<ImageType>;
   ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName( argv[1] );
+  reader->SetFileName(argv[1]);
 
-  using HigherFilterType = itk::HigherOrderAccurateDerivativeImageFilter< ImageType, ImageType >;
+  using HigherFilterType = itk::HigherOrderAccurateDerivativeImageFilter<ImageType, ImageType>;
   HigherFilterType::Pointer nthFilter = HigherFilterType::New();
-  nthFilter->SetInput( reader->GetOutput() );
-  nthFilter->SetOrder( 1 );
+  nthFilter->SetInput(reader->GetOutput());
+  nthFilter->SetOrder(1);
 
-  using WriterType = itk::ImageFileWriter< ImageType >;
+  using WriterType = itk::ImageFileWriter<ImageType>;
   WriterType::Pointer nthWriter = WriterType::New();
-  nthWriter->SetInput( nthFilter->GetOutput() );
+  nthWriter->SetInput(nthFilter->GetOutput());
 
   // First order accurate.
-  using FirstFilterType = itk::DerivativeImageFilter< ImageType, ImageType >;
+  using FirstFilterType = itk::DerivativeImageFilter<ImageType, ImageType>;
   FirstFilterType::Pointer firstFilter = FirstFilterType::New();
-  firstFilter->SetInput( reader->GetOutput() );
-  firstFilter->SetOrder( 1 );
+  firstFilter->SetInput(reader->GetOutput());
+  firstFilter->SetOrder(1);
 
-  using WriterType = itk::ImageFileWriter< ImageType >;
+  using WriterType = itk::ImageFileWriter<ImageType>;
   WriterType::Pointer firstWriter = WriterType::New();
-  firstWriter->SetInput( firstFilter->GetOutput() );
+  firstWriter->SetInput(firstFilter->GetOutput());
 
   std::ostringstream ostrm;
   try
+  {
+    for (unsigned int direction = 0; direction < 2; ++direction)
     {
-    for( unsigned int direction = 0; direction < 2; ++direction )
-      {
-      firstFilter->SetDirection( direction );
-      ostrm.str( "" );
+      firstFilter->SetDirection(direction);
+      ostrm.str("");
       ostrm << outputPrefix << "_DerivativeImageFilter_Direction" << direction << ".mha";
-      firstWriter->SetFileName( ostrm.str() );
+      firstWriter->SetFileName(ostrm.str());
       firstWriter->Update();
 
-      for( unsigned int accuracy = 1; accuracy < 6; ++accuracy )
-        {
-        nthFilter->SetDirection( direction );
-        nthFilter->SetOrderOfAccuracy( accuracy );
-        ostrm.str( "" );
+      for (unsigned int accuracy = 1; accuracy < 6; ++accuracy)
+      {
+        nthFilter->SetDirection(direction);
+        nthFilter->SetOrderOfAccuracy(accuracy);
+        ostrm.str("");
         ostrm << outputPrefix << "_Accuracy" << accuracy << "_Direction" << direction << ".mha";
-        nthWriter->SetFileName( ostrm.str() );
+        nthWriter->SetFileName(ostrm.str());
         nthWriter->Update();
-        }
       }
     }
-  catch (itk::ExceptionObject& ex)
-    {
+  }
+  catch (itk::ExceptionObject & ex)
+  {
     std::cerr << "Exception caught!" << std::endl;
     std::cerr << ex << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   return EXIT_SUCCESS;
 }

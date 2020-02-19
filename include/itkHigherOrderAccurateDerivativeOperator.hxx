@@ -24,49 +24,45 @@
 namespace itk
 {
 
-template< typename TPixel, unsigned int VDimension, typename TAllocator >
-typename HigherOrderAccurateDerivativeOperator< TPixel, VDimension, TAllocator >
-::CoefficientVector
-HigherOrderAccurateDerivativeOperator< TPixel, VDimension, TAllocator >
-::GenerateCoefficients()
+template <typename TPixel, unsigned int VDimension, typename TAllocator>
+typename HigherOrderAccurateDerivativeOperator<TPixel, VDimension, TAllocator>::CoefficientVector
+HigherOrderAccurateDerivativeOperator<TPixel, VDimension, TAllocator>::GenerateCoefficients()
 {
-  switch ( m_Order )
-    {
-  case 1:
-    return this->GenerateFirstOrderCoefficients();
-  default:
-    itkExceptionMacro(<< "The specified derivative order/degree is not yet supported.");
-    }
+  switch (m_Order)
+  {
+    case 1:
+      return this->GenerateFirstOrderCoefficients();
+    default:
+      itkExceptionMacro(<< "The specified derivative order/degree is not yet supported.");
+  }
 }
 
 
-template< typename TPixel, unsigned int VDimension, typename TAllocator >
-typename HigherOrderAccurateDerivativeOperator< TPixel, VDimension, TAllocator >
-::CoefficientVector
-HigherOrderAccurateDerivativeOperator< TPixel, VDimension, TAllocator >
-::GenerateFirstOrderCoefficients()
+template <typename TPixel, unsigned int VDimension, typename TAllocator>
+typename HigherOrderAccurateDerivativeOperator<TPixel, VDimension, TAllocator>::CoefficientVector
+HigherOrderAccurateDerivativeOperator<TPixel, VDimension, TAllocator>::GenerateFirstOrderCoefficients()
 {
-  unsigned int order  = this->m_OrderOfAccuracy;
-  unsigned int length = 2 * order + 1;
-  CoefficientVector coeff( length );
+  unsigned int      order = this->m_OrderOfAccuracy;
+  unsigned int      length = 2 * order + 1;
+  CoefficientVector coeff(length);
 
-  coeff[order + 1] = static_cast< double >( order ) / ( order + 1 );
+  coeff[order + 1] = static_cast<double>(order) / (order + 1);
   coeff[order - 1] = -1 * coeff[order + 1];
 
   unsigned int i;
   // TODO Try to refactor this loop to pull out common multiplications
-  for( i = 1; i < order; ++i )
-    {
-    coeff[order + 1 + i] = -1 * (i * static_cast< double >(order - i)) /
-      ( static_cast< double >(order + i + 1) * (i + 1)) * coeff[order + i];
+  for (i = 1; i < order; ++i)
+  {
+    coeff[order + 1 + i] =
+      -1 * (i * static_cast<double>(order - i)) / (static_cast<double>(order + i + 1) * (i + 1)) * coeff[order + i];
     coeff[order - 1 - i] = -1 * coeff[order + 1 + i];
-    }
+  }
 
   // We perform a flip of axes here to keep in line with
   // itk::DerivativeOperator.  The DerivativeImageFilter then calls FlipAxes(),
   // so I am not sure why they put it in reverse order in the first place.  Note
   // that a flip in this case is the same as flipping the sign.
-  for( i = 0; i < length; ++i )
+  for (i = 0; i < length; ++i)
     coeff[i] *= -1;
 
   // Center point.
