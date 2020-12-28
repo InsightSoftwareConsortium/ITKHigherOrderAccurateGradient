@@ -120,7 +120,7 @@ public:
   /** Set/Get the order of accuracy of the derivative operator.  For more
    * information, see HigherOrderAccurateDerivativeOperator. */
   itkSetMacro(OrderOfAccuracy, unsigned int);
-  itkGetConstMacro(OrderOfAccuracy, unsigned int)
+  itkGetConstMacro(OrderOfAccuracy, unsigned int);
 
     protected : HigherOrderAccurateGradientImageFilter();
   ~HigherOrderAccurateGradientImageFilter() override = default;
