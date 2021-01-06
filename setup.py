@@ -48,6 +48,6 @@ setup(
     keywords='ITK Higher-order Derivative Gradient',
     url=r'https://github.com/InsightSoftwareConsortium/ITKHigherOrderAccurateGradient',
     install_requires=[
-        r'itk>=5.1.1'
+        r'itk>=v5.2rc01'
     ]
     )
