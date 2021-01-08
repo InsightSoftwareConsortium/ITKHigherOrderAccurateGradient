@@ -122,7 +122,8 @@ public:
   itkSetMacro(OrderOfAccuracy, unsigned int);
   itkGetConstMacro(OrderOfAccuracy, unsigned int);
 
-    protected : HigherOrderAccurateGradientImageFilter();
+protected:
+  HigherOrderAccurateGradientImageFilter();
   ~HigherOrderAccurateGradientImageFilter() override = default;
   void
   PrintSelf(std::ostream & os, Indent indent) const override;
