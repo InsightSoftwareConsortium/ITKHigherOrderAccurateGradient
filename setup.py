@@ -13,7 +13,7 @@ except ImportError:
 
 setup(
     name='itk-higherorderaccurategradient',
-    version='1.1.1',
+    version='1.1.2',
     author='Matthew M. McCormick',
     author_email='matt.mccormick@kitware.com',
     packages=['itk'],
