@@ -24,7 +24,7 @@ setup(
                      'accurate derivative and gradient image filters.\n'
                      'Please refer to:\n'
                      'M. McCormick, "Higher Order Accurate Derivative and Gradient Calculation in ITK.", '
-                     'Insight Journal, July-December 2010, http://hdl.handle.net/10380/3231',
+                     'Insight Journal, July-December 2010, https://hdl.handle.net/10380/3231',
     classifiers=[
         "License :: OSI Approved :: Apache Software License",
         "Programming Language :: Python",
