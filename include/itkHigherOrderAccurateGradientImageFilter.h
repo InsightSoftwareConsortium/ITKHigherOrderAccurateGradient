@@ -68,8 +68,8 @@ public:
   /** Convenient type alias for simplifying declarations. */
   using InputImageType = TInputImage;
   using InputImagePointer = typename InputImageType::Pointer;
-  using OutputImageType = Image<CovariantVector<TOutputValueType, Self::OutputImageDimension>,
-                                Self::OutputImageDimension>;
+  using OutputImageType =
+    Image<CovariantVector<TOutputValueType, Self::OutputImageDimension>, Self::OutputImageDimension>;
   using OutputImagePointer = typename OutputImageType::Pointer;
 
   /** Standard class type alias. */
